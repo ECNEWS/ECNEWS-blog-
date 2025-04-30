@@ -2,47 +2,58 @@
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ब्लॉग नाम सेट करें - ECNEWS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>नया ब्लॉग नाम सेट करें</title>
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      padding: 20px;
+    }
     .container {
       max-width: 400px;
-      margin: 50px auto;
+      margin: auto;
+      background: white;
       padding: 20px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
       border-radius: 10px;
-      background-color: #f9f9f9;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
     }
     input[type="text"] {
-      width: 90%;
+      width: 100%;
       padding: 10px;
-      margin: 10px 0;
-      border: 2px solid #ccc;
-      border-radius: 5px;
+      margin-top: 10px;
       font-size: 16px;
+      border-radius: 8px;
+      border: 2px solid #ccc;
     }
-    .valid {
+    input.valid {
       border-color: green;
     }
-    .invalid {
+    input.invalid {
       border-color: red;
     }
-    .info-box {
-      margin: 20px 0;
-      text-align: left;
+    #feedback {
+      margin-top: 8px;
+      font-weight: bold;
     }
     button {
-      padding: 10px 20px;
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
       font-size: 16px;
-      background-color: #007bff;
-      color: white;
       border: none;
-      border-radius: 5px;
-      cursor: pointer;
+      border-radius: 8px;
+      background-color: gray;
+      color: white;
+      cursor: not-allowed;
     }
-    button:hover {
-      background-color: #0056b3;
+    button.enabled {
+      background-color: #28a745;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -50,37 +61,52 @@
 
 <div class="container">
   <h1>ब्लॉग नाम सेट करें</h1>
-  <input type="text" id="blogName" placeholder="अपना ब्लॉग नाम दर्ज करें" oninput="checkBlogName()">
+  <input type="text" id="blogName" placeholder="अपना यूनिक ब्लॉग नाम दर्ज करें" oninput="checkBlogName()">
+  <div id="feedback"></div>
 
-  <div class="info-box">
-    <p>नाम: ............</p>
-    <p>पूर्ण पता: ............</p>
-    <p>ईमेल आईडी: ............</p>
-    <p>पासवर्ड: ............</p>
-  </div>
-
-  <button onclick="saveAndProceed()">सेव करें और आगे जाएं</button>
+  <button id="saveBtn" onclick="saveAndProceed()" disabled>✅ सेव करें और आगे जाएं</button>
 </div>
 
 <script>
+  const takenNames = ["hinditech", "ecnews", "myblog", "farmupdates"];
+
   function checkBlogName() {
-    const blogNameInput = document.getElementById('blogName');
-    if (blogNameInput.value.length >= 5) {
-      blogNameInput.classList.add('valid');
-      blogNameInput.classList.remove('invalid');
+    const input = document.getElementById("blogName");
+    const feedback = document.getElementById("feedback");
+    const button = document.getElementById("saveBtn");
+    const name = input.value.trim().toLowerCase();
+
+    if (name === "") {
+      input.classList.remove("valid", "invalid");
+      feedback.textContent = "";
+      button.disabled = true;
+      button.classList.remove("enabled");
+      return;
+    }
+
+    if (takenNames.includes(name)) {
+      input.classList.add("invalid");
+      input.classList.remove("valid");
+      feedback.textContent = "❌ यह नाम पहले से लिया गया है";
+      feedback.style.color = "red";
+      button.disabled = true;
+      button.classList.remove("enabled");
     } else {
-      blogNameInput.classList.add('invalid');
-      blogNameInput.classList.remove('valid');
+      input.classList.add("valid");
+      input.classList.remove("invalid");
+      feedback.textContent = "✅ यह नाम उपलब्ध है";
+      feedback.style.color = "green";
+      button.disabled = false;
+      button.classList.add("enabled");
     }
   }
 
   function saveAndProceed() {
-    const blogName = document.getElementById('blogName').value;
-    if (blogName.length >= 5) {
-      // ✅ अब सही लिंक पर भेजेगा
+    const name = document.getElementById("blogName").value.trim();
+    if (name !== "") {
+      // भविष्य में LocalStorage में नाम सेव करने के लिए आप यह लाइन उपयोग कर सकते हैं
+      // localStorage.setItem("blogName", name);
       window.location.href = "https://ecnews.github.io/ECNEWS-blog-/";
-    } else {
-      alert('कृपया वैध ब्लॉग नाम दर्ज करें।');
     }
   }
 </script>
